@@ -5,6 +5,9 @@ body {
   overflow-y: scroll;
   overflow-x: hidden;
 }
+.form-all{
+    margin-bottom: 50px;
+}
 ion-icon {
  color: var(--bs-teal) !important;
     font-size: 32px;
