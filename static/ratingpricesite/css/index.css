@@ -1,7 +1,80 @@
-body{
-    margin: 0px;
-    padding: 0px;
-    background: var(--bs-gray-200);
-    overflow-y: scroll;
-    overflow-x: hidden;
+body {
+  margin: 0px;
+  padding: 0px;
+  background: var(--bs-gray-200);
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+ion-icon {
+ color: var(--bs-teal) !important;
+    font-size: 32px;
+margin-top: 1px;
+}
+.title {
+  margin-left: 9.5rem; /* 64px */
+  margin-right: 9.5rem;
+}
+.mail,
+.senha {
+  width: 400px !important;
+}
+.lgbt {
+  background: var(--bs-teal) !important;
+  color: var(--bs-light) !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: none !important;
+  cursor: pointer !important;
+}
+
+.lgbt:hover,
+.lgbt:active,
+.lgbt:focus {
+  background: var(--bs-teal) !important;
+    color: var(--bs-light) !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: none !important;
+}
+
+@media (max-width: 576px) {
+  .title {
+    margin: 2px 11px 0px 0px;
+  }
+  .mail,
+  .senha,
+  .form-label {
+    width: 23rem !important;
+    margin-left: 15px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .title {
+    margin-left: 10rem; /* 64px */
+    margin-right: 10rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .title {
+    margin-left: 10rem; /* 64px */
+    margin-right: 10rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .title {
+    margin-left: 10rem; /* 64px */
+    margin-right: 10rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .title {
+    margin-left: 10rem; /* 64px */
+    margin-right: 10rem;
+  }
 }
