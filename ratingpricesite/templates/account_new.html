@@ -19,7 +19,21 @@
       <div class="d-flex flex-column min-vh-100">
 
     <main class="flex-grow-1">
-<form class="mx-auto d-flex flex-column align-items-center form-all" style="max-width: 400px;">
+<form class="mx-auto d-flex flex-column align-items-center form-all" style="max-width: 400px;" method="post" action="/createuser/">
+      {% csrf_token %}
+   {% if wrn %}
+    <p style="color: orange;">{{ wrn }}</p>
+{% endif %}
+{% if erro %}
+    <p style="color: red;">{{ erro }}</p>
+{% endif %}
+
+{% if Ok %}
+    <p style="color: green;">
+        {{ Ok }} 
+        <a href="{% url 'index' %}">Voltar para a página inicial</a>
+    </p>
+{% endif %}
   <div class="fixed-top   p-2 d-flex justify-content-start">
   <a href="{% url 'admin_site' %}" class="text-secondary text-decoration-none link">
     Cancelar  e Logar
@@ -32,19 +46,19 @@
  
   <div class="mb-3 w-100">
     <label class="form-label">Email</label>
-    <input type="text" class="form-control mail">
+    <input type="text" class="form-control mail" name="email">
   </div>
 <div class="mb-3 w-100">
     <label class="form-label">Nome de usuário</label>
-    <input type="text" class="form-control mail">
+    <input type="text" class="form-control mail" name="nome">
   </div>
   <div class="mb-3 w-100">
     <label class="form-label">Senha</label>
-    <input type="password" class="form-control senha">
+    <input type="password" class="form-control senha" name="senha">
   </div>
 <div class="mb-3 w-100">
     <label class="form-label">Repetir senha</label>
-    <input type="password" class="form-control senha">
+    <input type="password" class="form-control senha" name="senharepetida">
   </div>
 
 <div class="mb-3 w-100">
