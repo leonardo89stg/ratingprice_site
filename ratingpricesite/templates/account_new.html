@@ -21,6 +21,16 @@
     <main class="flex-grow-1">
 <form class="mx-auto d-flex flex-column align-items-center form-all" style="max-width: 400px;" method="post" action="/createuser/">
       {% csrf_token %}
+ 
+  <div class="fixed-top   p-2 d-flex justify-content-start">
+  <a href="{% url 'admin_site' %}" class="text-secondary text-decoration-none link">
+    Cancelar  e Logar
+  </a>
+</div>
+  <label class="form-label d-flex flex-column align-items-center mb-4 title">
+    <img src="{% static 'ratingpricesite/image/brand.png' %}" width="100" height="100" alt="Brand Logo" class="mb-2"> </label>
+
+    <h3>Cadastro-Administração</h3>
    {% if wrn %}
     <p style="color: orange;">{{ wrn }}</p>
 {% endif %}
@@ -31,19 +41,9 @@
 {% if Ok %}
     <p style="color: green;">
         {{ Ok }} 
-        <a href="{% url 'index' %}">Voltar para a página inicial</a>
+        <a href="{% url 'admin_site' %}">Voltar para a página inicial</a>
     </p>
 {% endif %}
-  <div class="fixed-top   p-2 d-flex justify-content-start">
-  <a href="{% url 'admin_site' %}" class="text-secondary text-decoration-none link">
-    Cancelar  e Logar
-  </a>
-</div>
-  <label class="form-label d-flex flex-column align-items-center mb-4 title">
-    <img src="{% static 'ratingpricesite/image/brand.png' %}" width="100" height="100" alt="Brand Logo" class="mb-2"> </label>
-
-    <h3>Cadastro-Administração</h3>
- 
   <div class="mb-3 w-100">
     <label class="form-label">Email</label>
     <input type="text" class="form-control mail" name="email">
@@ -63,7 +63,7 @@
 
 <div class="mb-3 w-100">
     <label class="form-label">Rede Social</label> 
-    <ion-icon name="logo-instagram"></ion-icon><input type="text" class="form-control mail">
+    <ion-icon name="logo-instagram"></ion-icon><input type="text" class="form-control mail" name="rede_social">
   </div>
 
   <div class="mb-3 w-100 d-flex justify-content-center">
