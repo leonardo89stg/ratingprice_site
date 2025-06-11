@@ -37,8 +37,8 @@
         <div class="card-body">
           <h5 class="card-title">{{ produto.nomepro }}</h5>
           <p class="card-text">Preço: R$ {{ produto.preco }}</p>
-          <p>Descrição:</p>
-          <pre class="card-text ">{{ produto.descricao }}</pre>
+          {% comment %} <p>Descrição:</p>
+          <pre class="card-text ">{{ produto.descricao }}</pre> {% endcomment %}
     {% if produto.market.cdgmk == "amz" %}
   <a href="{{ produto.links }}" target="_blank" class="btn  amz">Ver Produto</a>&nbsp;&nbsp;vendido na &nbsp;  {{ produto.market }}   {# ml = cor amarela #}
 {% elif produto.market.cdgmk == "ml" %}
