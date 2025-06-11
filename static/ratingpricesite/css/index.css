@@ -47,6 +47,49 @@ ion-icon {
   outline: none !important;
   transition: none !important;
 }
+.amz, .ml, .shp {
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.25rem;
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 500;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  cursor: pointer !important;
+  transition: none !important;
+}
+
+.amz {
+  background:#2c3d4d;
+  color: var(--bs-light) !important;
+}
+.amz:hover, .amz:focus, .amz:active {
+  background:#2c3d4d;
+  color: var(--bs-light) !important;
+}
+
+.ml {
+  background:#fbff1b;
+  color: #333 !important;
+}
+.ml:hover, .ml:focus, .ml:active {
+  background:#fbff1b;
+  color: var(--bs-dark) !important;
+}
+
+.shp {
+  background:#e95b30;
+  color: var(--bs-light) !important;
+}
+.shp:hover, .shp:focus, .shp:active {
+  background:#e95b30;
+  color: var(--bs-light) !important;
+}
+
+
+
+
   .submenu,
   .list-group-item {
     text-align: center;
@@ -62,10 +105,10 @@ ion-icon {
   text-align: center;
   white-space: nowrap;
 }
-@media (max-width: 576px) {
+@media (max-width: 320px) {
   .title {
     margin: 2px 11px 0px 0px;
-  }
+  }  
   .mail,
   .senha,
   .form-label,.categoria {

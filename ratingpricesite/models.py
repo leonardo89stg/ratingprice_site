@@ -23,11 +23,20 @@ class SubCategoriaProduct(models.Model):
 
     def __str__(self):
         return self.subcategoria
+class Market(models.Model):
+    market = models.CharField(max_length=100 ,blank=True)
+    cdgmk = models.CharField(max_length=200 ,blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    def __str__(self):
+        return self.market
+    
     
 class LinksProduct(models.Model):
     id_user = models.TextField()
     links = models.URLField()
+    fabricante = models.TextField(default="Desconhecido")
     categoria = models.ForeignKey(CategoriaProduct, on_delete=models.CASCADE, related_name='produtos')
+    market = models.ForeignKey(Market, on_delete=models.CASCADE, related_name='produtos', null=True, blank=True)
     subicategoria =models.ForeignKey(SubCategoriaProduct, on_delete=models.CASCADE, related_name='produtos')
     nomepro = models.TextField(default="Sem nome")
     descricao = models.TextField()

@@ -60,7 +60,7 @@
       </div>
     </div>
 <main class="flex-grow-1 d-flex flex-column align-items-center justify-content-start pt-4">
-<form method="post" action="{% url 'salvar_edicao' %}" style="width:400px;">
+<form method="post" action="{% url 'salvar_edicao' %}" style="width:301px;">
   {% csrf_token %}
   <input type="hidden" name="codigo" value="{{ produto.codigo }}">
   <input type="hidden" name="id_user" value="{{ produto.id_user }}">
@@ -69,15 +69,30 @@
     <label>Nome do Produto</label>
     <input type="text" name="nomepro" class="form-control" value="{{ produto.nomepro }}">
   </div>
+<div class="mb-3">
+    <label>Fabricante</label>
+    <input type="text" name="fabricante" class="form-control" value="{{ produto.fabricante }}">
+  </div>
 
+  <label for="market_id">Loja</label>
+<select name="market_id" id="market_id" class="form-control">
+  <option value="">-- Selecione uma loja --</option>
+  
+  {% for mercado in mercados %}
+<option value="{{ mercado.id }}" {% if produto.market and produto.market.id == mercado.id %}selected{% endif %}>
+  {{ mercado.market }}
+</option>
+
+  {% endfor %}
+</select>
   <div class="mb-3">
     <label>Preço</label>
     <input type="text" name="preco" class="form-control" value="{{ produto.preco }}">
   </div>
 
-  <div class="mb-3">
+  <div class="mb-3 w-100"  >
     <label>Descrição</label>
-    <textarea name="descricao" class="form-control">{{ produto.descricao }}</textarea>
+    <textarea name="descricao" rows="32"class="form-control">{{ produto.descricao }}</textarea>
   </div>
 
   <div class="mb-3">
@@ -113,10 +128,17 @@
       {% endfor %}
     </select>
   </div>
-  <button type="submit" class="btn btn-success">Salvar</button>
+  <button type="submit" class="btn btn-none lgbt">Salvar</button>
 </form>
 </main>
- 
+<br>
+ <footer class="mt-auto bg-dark text-white text-center py-3 shadow-sm">
+  <div class="container">
+    <small>
+      © 2025 <strong class="text-warning">RatingPrice</strong> <span style="font-size: 18px;">&#9733;</span>
+    </small>
+  </div>
+</footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>

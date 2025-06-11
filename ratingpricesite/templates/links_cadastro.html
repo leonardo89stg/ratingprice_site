@@ -95,7 +95,7 @@
        <div class="d-flex flex-column min-vh-100">
    <main class="flex-grow-1 d-flex flex-column align-items-center justify-content-start pt-4">
 
-  <form method="post" action="/Cadlink/ " class="d-flex flex-column align-items-center mb-4 form-all" style="max-width: 400px; width: 100%;">
+  <form method="post" action="/Cadlink/ " class="d-flex flex-column align-items-center mb-4 form-all" style="max-width: 313px; width: 100%;">
     {% csrf_token %}
         
   <input type="hidden" name="id-user" value="{{ id }}" class="form-control"><br>
@@ -118,16 +118,26 @@
   <input type="text" name="nome-produto"  placeholder="Nome do produto"  class="form-control"><br>
   <label class="form-label" style="max-width: 500px; width: 100%;">link</label> 
   <input type="text" name="link"  placeholder="Link"  class="form-control"><br>
+  <label class="form-label" style="max-width: 500px; width: 100%;">Fabricante</label> 
+  <input type="text" name="fabricante"  placeholder="Fabricante"  class="form-control"><br>
+<label class="form-label" style="max-width: 500px; width: 100%;">Loja (Market)</label>
+<select name="market" class="form-control">
+  <option value="">Selecione uma loja</option>
+  {% for market in markets %}
+    <option value="{{ market.id }}">{{ market.market }}</option>
+  {% endfor %}
+</select><br><br>
+
    <label class="form-label" style="max-width: 500px; width: 100%;">Categoria do produto</label> 
   <select name="categoriapro" class="form-control" >
   {% for ctg in categorias %}
-    <option value="{{ ctg.id }}">{{ ctg.categoria }}</option>
+    <option value="{{ ctg.categoria }}">{{ ctg.categoria }}</option>
   {% endfor %}
 </select><br><br>
  <label class="form-label" style="max-width: 500px; width: 100%;">Sub Categoria do produto</label> 
  <select name="subcategoriapro" class="form-control" >
   {% for ctg in subcategorias %}
-    <option value="{{ ctg.id }}">{{ ctg.subcategoria }}</option>
+    <option value="{{ ctg.subcategoria }}">{{ ctg.subcategoria }}</option>
   {% endfor %}
 </select>
       <label class="form-label" style="max-width: 500px; width: 100%;">Descrição</label> 
@@ -144,9 +154,10 @@
 </main>
 <br><br>
  
-      <footer class="foot bg-secondary text-white text-center p-3">
-      © 2025 RatingPrice <strong style="font-size: 16px; color: gold;">&#9733;</strong>
-    </footer>
+   <footer class="foot bg-secondary text-white text-center p-3 mt-auto">
+    © 2025 RatingPrice <strong style="font-size: 16px; color: gold;">&#9733;</strong>
+  </footer>
+</div>
 </div>
   </body>
 </html>

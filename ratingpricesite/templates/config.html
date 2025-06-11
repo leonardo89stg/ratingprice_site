@@ -118,7 +118,7 @@
 
 <form method="POST" action="/delcatg/" style="width:300px">
    {% csrf_token %}
-<input type="hidden" name="catid" value="{{ ctg.id}}">
+<input type="hidden" name="catid" value="{{ctg.categoria}}">
 {{ ctg.categoria}}               <button type="submit" style="background:none; color:red; border:none;">
   <i class="fa-solid fa-trash"></i>
 </button>
@@ -127,9 +127,7 @@
 {% endfor %}
 </div>
 
-<br><br><br>
-<br><br><br>
-<br><br><br>
+<br>
  <form method="POST" action="/scadacateg/">
    {% csrf_token %}
 <input type="text" placeholder="Sub Categoria a ser cadastrada" name="scategoria"  class="form-control categoria "><br>
@@ -141,7 +139,7 @@
 {% for sctg in subcategorias %}
 <form method="POST" action="/sdelcatg/" style="width:300px">
    {% csrf_token %}
-   <input type="hidden" name="scatid" value="{{ sctg.id }}">
+   <input type="hidden" name="scatid" value="{{ sctg.subcategoria }}">
    {{ sctg.subcategoria }}
    <button type="submit" style="background:none; color:red; border:none;">
      <i class="fa-solid fa-trash"></i>

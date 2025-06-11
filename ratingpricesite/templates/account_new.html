@@ -18,8 +18,8 @@
 
       <div class="d-flex flex-column min-vh-100">
 
-    <main class="flex-grow-1">
-<form class="mx-auto d-flex flex-column align-items-center form-all" style="max-width: 400px;" method="post" action="/createuser/">
+   <main class="flex-grow-1"  style="max-width: 1900px;">
+ <form class="mx-auto d-flex flex-column align-items-center form-all" style="max-width: 1900px;" method="post" action="/createuser/">
       {% csrf_token %}
  
   <div class="fixed-top   p-2 d-flex justify-content-start">
@@ -44,29 +44,29 @@
         <a href="{% url 'admin_site' %}">Voltar para a página inicial</a>
     </p>
 {% endif %}
-  <div class="mb-3 w-100">
+   <div class="mb-4 w-150">
     <label class="form-label">Email</label>
     <input type="text" class="form-control mail" name="email">
   </div>
-<div class="mb-3 w-100">
+<div class="mb-4 w-150">
     <label class="form-label">Nome de usuário</label>
     <input type="text" class="form-control mail" name="nome">
   </div>
-  <div class="mb-3 w-100">
+   <div class="mb-4 w-150">
     <label class="form-label">Senha</label>
     <input type="password" class="form-control senha" name="senha">
   </div>
-<div class="mb-3 w-100">
+<div class="mb-4 w-150">
     <label class="form-label">Repetir senha</label>
     <input type="password" class="form-control senha" name="senharepetida">
   </div>
 
-<div class="mb-3 w-100">
+<div class="mb-4 w-120">
     <label class="form-label">Rede Social</label> 
     <ion-icon name="logo-instagram"></ion-icon><input type="text" class="form-control mail" name="rede_social">
   </div>
 
-  <div class="mb-3 w-100 d-flex justify-content-center">
+  <div class="mb-4 w-100 d-flex justify-content-center">
     <input type="submit" value="Criar minha conta" class="btn btn-none lgbt">
   </div>
 </form><br><br><br>

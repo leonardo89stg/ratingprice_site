@@ -94,72 +94,78 @@
 
        <div class="d-flex flex-column min-vh-100">
    <main class="flex-grow-1 d-flex flex-column align-items-center justify-content-start pt-4">
-<form method="post" action="/salvar_edicao/" class="d-flex flex-column align-items-center mb-4 form-all" style="max-width: 300px; width: 100%;">
-  {% csrf_token %}
+  <div class="container" style="max-width:width: 301px; width: 100%;">
+    <form method="post" action="/salvar_edicao/" class="mb-3 w-100">
+      {% csrf_token %}
 
-  <!-- mensagens -->
-  {% if messages %}
-    {% for message in messages %}
-      <p style="color:
-        {% if message.tags == 'success' %}green
-        {% elif message.tags == 'warning' %}orange
-        {% elif message.tags == 'error' %}red
-        {% else %}black{% endif %};
-      ">
-        {{ message }}
-      </p>
-    {% endfor %}
-  {% endif %}
+      <!-- mensagens -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
 
-  <div class="mb-3 w-100">
-    <input type="hidden" name="iduser" value="{{ id }}" class="form-control" required />
-    <input type="hidden" name="cdg_pro" value="{{ produto_alterar.codigo }}" class="form-control" required />
+      <input type="hidden" name="iduser" value="{{ id }}" class="form-control" required />
+      <input type="hidden" name="cdg_pro" value="{{ produto_alterar.codigo }}" class="form-control" required />
 
-    <!-- Link -->
-    <label for="link">Link de afiliado</label>
-    <input type="text" name="link" placeholder="Link" value="{{ produto_alterar.links }}" class="form-control link" required />
+      <!-- Link -->
+      <div class="mb-3">
+        <label for="link">Link de afiliado</label>
+        <input type="text" name="link" placeholder="Link" value="{{ produto_alterar.links }}" class="form-control" required  style="max-width: 100px; "/>
+      </div>
 
-    <!-- Nome -->
-    <label for="nome">Nome do produto</label>
-    <input type="text" name="nome" placeholder="Nome" value="{{ produto_alterar.nomepro }}" class="form-control link" required />
+      <!-- Nome -->
+      <div class="mb-3">
+        <label for="nome">Nome do produto</label>
+        <input type="text" name="nome" placeholder="Nome" value="{{ produto_alterar.nomepro }}" class="form-control" required />
+      </div>
 
-    <!-- Categoria -->
-    <label for="categoria">Selecione a categoria:</label>
-    <select name="categoria" id="categoria" class="form-select" required>
-      {% for cat in categorias %}
-        <option value="{{ cat.categoria }}" {% if cat.categoria == produto_alterar.categoria.categoria %}selected{% endif %}>
-          {{ cat.categoria }}
-        </option>
-      {% empty %}
-        <option disabled>Nenhuma categoria disponível</option>
-      {% endfor %}
-    </select>
+      <!-- Categoria -->
+      <div class="mb-3">
+        <label for="categoria">Selecione a categoria:</label>
+        <select name="categoria" id="categoria" class="form-select" required>
+          {% for cat in categorias %}
+            <option value="{{ cat.categoria }}" {% if cat.categoria == produto_alterar.categoria.categoria %}selected{% endif %}>
+              {{ cat.categoria }}
+            </option>
+          {% empty %}
+            <option disabled>Nenhuma categoria disponível</option>
+          {% endfor %}
+        </select>
+      </div>
 
-    <!-- Descrição -->
-    <label for="descricao">Descrição:</label>
-    <textarea name="descricao" id="descricao" rows="3" class="form-control desc" required>{{ produto_alterar.descricao }}</textarea>
+      <!-- Descrição -->
+      <div class="mb-3">
+        <label for="descricao">Descrição:</label>
+        <textarea name="descricao" id="descricao" rows="3" class="form-control" required>{{ produto_alterar.descricao }}</textarea>
+      </div>
 
-    <!-- Foto -->
-    <label for="ftpro">Link da foto:</label>
-    <input type="text" name="ftpro" placeholder="Foto" value="{{ produto_alterar.foto }}" class="form-control link" required />
+      <!-- Foto -->
+      <div class="mb-3">
+        <label for="ftpro">Link da foto:</label>
+        <input type="text" name="ftpro" placeholder="Foto" value="{{ produto_alterar.foto }}" class="form-control" required />
+      </div>
 
-    <!-- Vídeo -->
-    <label for="video">Link do vídeo (opcional):</label>
-    <input type="text" name="video" placeholder="Vídeo" value="{{ produto_alterar.video }}" class="form-control link" />
+      <!-- Vídeo -->
+      <div class="mb-3">
+        <label for="video">Link do vídeo (opcional):</label>
+        <input type="text" name="video" placeholder="Vídeo" value="{{ produto_alterar.video }}" class="form-control" />
+      </div>
 
-    <!-- Preço -->
-    <label for="preco">Preço:</label>
-    <input type="text" name="preco" placeholder="Preço" value="{{ produto_alterar.preco }}" class="form-control link" required />
+      <!-- Preço -->
+      <div class="mb-3">
+        <label for="preco">Preço:</label>
+        <input type="text" name="preco" placeholder="Preço" value="{{ produto_alterar.preco }}" class="form-control" required />
+      </div>
+
+      <!-- Botão -->
+      <div class="mb-3 d-flex justify-content-center">
+        <input type="submit" value="Atualizar link" class="btn btn-none lgbt" />
+      </div>
+    </form>
   </div>
-
-  <div class="mb-3 w-100 d-flex justify-content-center">
-    <input type="submit" value="Atualizar link" class="btn btn-none lgbt" />
-  </div>
-</form>
-
- 
-
 </main>
+
 
 
       <footer class="foot bg-secondary text-white text-center p-3">

@@ -3,7 +3,7 @@ from django.http import HttpRequest, HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from  . models  import UserAdmin,  CategoriaProduct, LinksProduct,SubCategoriaProduct
+from  . models  import UserAdmin,  CategoriaProduct, LinksProduct,SubCategoriaProduct,Market
 from django.db.models import Prefetch
 from collections import defaultdict
 
@@ -27,36 +27,53 @@ def gerar_codigo_unico(tamanho=6):
     codigo = ''.join(random.choices(caracteres, k=tamanho))
     return codigo
 def index(request):
-    categoria_id = request.GET.get("categoria")
-    subcategoria_id = request.GET.get("scategoria")
+    categoria_nome = request.GET.get("categoria")
+    subcategoria_nome = request.GET.get("scategoria")
+    order = request.GET.get("order")  # 'asc' ou 'desc'
+    valor_max = request.GET.get("valor_max")  # novo filtro valor máximo
 
     categorias = CategoriaProduct.objects.all()
+    cdgmk = Market.objects.all()
+    subcategorias = SubCategoriaProduct.objects.none()
+    produtos = LinksProduct.objects.none()
 
-    if categoria_id:
-        produtos_filtrados = LinksProduct.objects.filter(categoria_id=categoria_id)
-        subcategoria_ids = produtos_filtrados.values_list('subicategoria_id', flat=True).distinct()
-        subcategorias = SubCategoriaProduct.objects.filter(id__in=subcategoria_ids)
+    if categoria_nome:
+        produtos_filtrados = LinksProduct.objects.filter(categoria__categoria=categoria_nome)
+        subcategoria_nomes = produtos_filtrados.values_list('subicategoria__subcategoria', flat=True).distinct()
+        subcategorias = SubCategoriaProduct.objects.filter(subcategoria__in=subcategoria_nomes)
+
+        if subcategoria_nome:
+            produtos = produtos_filtrados.filter(subicategoria__subcategoria=subcategoria_nome)
+        else:
+            produtos = produtos_filtrados
     else:
-        subcategorias = SubCategoriaProduct.objects.all()
+        produtos = LinksProduct.objects.all()
 
-    produtos = LinksProduct.objects.all()
+    # filtro valor máximo
+    if valor_max:
+        try:
+            valor_max_float = float(valor_max)
+            produtos = produtos.filter(preco__lte=valor_max_float)
+        except ValueError:
+            pass  # ignora filtro se inválido
 
-    if categoria_id:
-        produtos = produtos.filter(categoria_id=categoria_id)
-    if subcategoria_id:
-        produtos = produtos.filter(subicategoria_id=subcategoria_id)
+    # ordenação
+    if order == 'asc':
+        produtos = produtos.order_by('preco')
+    elif order == 'desc':
+        produtos = produtos.order_by('-preco')
 
-    return render(
-        request,
-        "index.html",
-        {
-            "categorias": categorias,
-            "subcategorias": subcategorias,
-            "produtos": produtos,
-            "categoria_selecionada": categoria_id,
-            "scategoria_selecionada": subcategoria_id,
-        },
-    )
+    return render(request, "index.html", {
+        "categorias": categorias,
+        "cdgmk": cdgmk,
+        "subcategorias": subcategorias,
+        "produtos": produtos,
+        "categoria_selecionada": categoria_nome,
+        "scategoria_selecionada": subcategoria_nome,
+        "order": order,
+        "valor_max": valor_max,  # envia para o template
+    })
+
 def admin_site(request):
     return render(request, "admin.html")
 
@@ -158,30 +175,30 @@ def dashboard(request):
     id_user = request.session.get("id")
     nome = request.session.get("nome")
 
-    categoria_selecionada = request.GET.get("categoria")
-    scategoria_selecionada = request.GET.get("scategoria")
+    nome_categoria = request.GET.get("categoria")
+    nome_subcategoria = request.GET.get("scategoria")
 
     # Base: produtos do usuário
     produtos_qs = LinksProduct.objects.filter(id_user=id_user)
 
-    # Filtra por categoria se selecionada
-    if categoria_selecionada:
-        produtos_qs = produtos_qs.filter(categoria_id=categoria_selecionada)
+    # Filtra por nome da categoria
+    if nome_categoria:
+        produtos_qs = produtos_qs.filter(categoria__categoria=nome_categoria)
 
-    # Filtra por subcategoria se selecionada
-    if scategoria_selecionada:
-        produtos_qs = produtos_qs.filter(subicategoria_id=scategoria_selecionada)
+    # Filtra por nome da subcategoria
+    if nome_subcategoria:
+        produtos_qs = produtos_qs.filter(subicategoria__subcategoria=nome_subcategoria)
 
     # Prefetch produtos filtrados para cada categoria
     categorias = CategoriaProduct.objects.prefetch_related(
         Prefetch('produtos', queryset=produtos_qs, to_attr='produtos_usuario')
     )
 
-    # Filtra subcategorias que aparecem nos produtos da categoria selecionada
-    if categoria_selecionada:
+    # Subcategorias relacionadas aos produtos com base no nome da categoria
+    if nome_categoria:
         subcategorias = SubCategoriaProduct.objects.filter(
             id__in=LinksProduct.objects.filter(
-                categoria_id=categoria_selecionada
+                categoria__categoria=nome_categoria
             ).values_list('subicategoria_id', flat=True).distinct()
         )
     else:
@@ -194,8 +211,8 @@ def dashboard(request):
             "nome": nome,
             "categorias": categorias,
             "subcategorias": subcategorias,
-            "categoria_selecionada": categoria_selecionada,
-            "scategoria_selecionada": scategoria_selecionada,
+            "categoria_selecionada": nome_categoria,
+            "scategoria_selecionada": nome_subcategoria,
         },
     )
 
@@ -210,13 +227,18 @@ def lnk_cadastro(request):
 
     categorias = CategoriaProduct.objects.filter( )
     subcategorias = SubCategoriaProduct.objects.filter()
+    markets = Market.objects.all()  # Aqui puxa todas as lojas
     return render(
         request,
         "links_cadastro.html",
-        {"nome": nome, "id": id, "categorias": categorias ,"subcategorias": subcategorias   },
+        {
+            "nome": nome,
+            "id": id,
+            "categorias": categorias,
+            "subcategorias": subcategorias,
+            "markets": markets,  # passa para o template
+        },
     )
-
-
 @never_cache
  
 
@@ -224,33 +246,46 @@ def Cadlink(request):
     if request.method == "POST":
         iduser = request.POST.get("id-user")
         nome_produto = request.POST.get("nome-produto")
+        fabricante = request.POST.get("fabricante")
         link = request.POST.get("link")
         categoriapro_id = request.POST.get("categoriapro")
         scategoriapro_id = request.POST.get("subcategoriapro")
+        market_id = request.POST.get("market")  # novo campo para loja
         descricao = request.POST.get("descricao")
         midia = request.POST.get("midia")
         preco = request.POST.get("preco")
         
         codigo = gerar_codigo_unico()
         
-        # Busca a categoria correta pelo id
+        # Busca a categoria e subcategoria pelo id
         try:
-            categoria_obj = CategoriaProduct.objects.get(id=categoriapro_id)
-            subcat_obj = SubCategoriaProduct.objects.get(id=scategoriapro_id)
+            categoria_obj = CategoriaProduct.objects.get(categoria=categoriapro_id)
+            subcat_obj = SubCategoriaProduct.objects.get(subcategoria=scategoriapro_id)
         except CategoriaProduct.DoesNotExist:
             messages.error(request, "Categoria inválida.")
             return redirect('link_cadastro')
         
+        # Busca o Market (loja) pelo id, se enviado
+        market_obj = None
+        if market_id:
+            try:
+                market_obj = Market.objects.get(id=market_id)
+            except Market.DoesNotExist:
+                messages.warning(request, "Loja inválida, ignorando.")
+        
+        # Cria o produto, incluindo o market_obj (que pode ser None)
         LinksProduct.objects.create(
             id_user=iduser,
             nomepro=nome_produto,
             links=link,
-            categoria=categoria_obj, # Passa a instância da categoria
-            subicategoria = subcat_obj ,
+            categoria=categoria_obj,
+            subicategoria=subcat_obj,
+            market=market_obj,
             descricao=descricao,
             midia=midia,
             preco=preco,
             codigo=codigo,
+            fabricante=fabricante or "Desconhecido",
             created_at=timezone.now()
         )
         
@@ -258,6 +293,7 @@ def Cadlink(request):
         return redirect('link_cadastro')
 
     return redirect('dashboard')
+
 
 
 
@@ -280,19 +316,19 @@ def editarproduto(request):
         codigo = request.GET.get("codigo")
         id_user = request.session.get("id")
         nome = request.session.get("nome")
+
         produto = get_object_or_404(LinksProduct, codigo=codigo, id_user=id_user)
         categorias = CategoriaProduct.objects.all()
-
-        # Corrija aqui para usar o nome correto do campo da FK no model SubCategoriaProduct:
         subcategorias = SubCategoriaProduct.objects.all()
+        mercados = Market.objects.all()  # <-- ADICIONADO AQUI
 
         return render(request, "editar_produto.html", {
             "produto": produto,
             "categorias": categorias,
             "subcategorias": subcategorias,
+            "mercados": mercados,  # <-- ADICIONADO AQUI
             "nome": nome
         })
-
 @never_cache
 def salvar_edicao(request):
     if request.method == "POST":
@@ -306,8 +342,19 @@ def salvar_edicao(request):
         produto.descricao = request.POST.get("descricao")
         produto.links = request.POST.get("links")
         produto.midia = request.POST.get("midia")
+        produto.fabricante = request.POST.get("fabricante") or "Desconhecido"
         produto.categoria_id = request.POST.get("categoria_id")
-        produto.subicategoria_id = request.POST.get("subcategoria_id")  # corrigido
+        produto.subicategoria_id = request.POST.get("subcategoria_id")
+
+        market_id = request.POST.get("market_id")  # captura o id da loja
+
+        if market_id:
+            try:
+                produto.market = Market.objects.get(id=market_id)
+            except Market.DoesNotExist:
+                produto.market = None
+        else:
+            produto.market = None
 
         try:
             produto.save()
@@ -316,6 +363,7 @@ def salvar_edicao(request):
             messages.error(request, f"Erro ao atualizar o produto: {str(e)}")
 
         return redirect("dashboard")
+
 @never_cache
 def config(request):
     if "id" not in request.session:
@@ -362,7 +410,7 @@ def delcatg(request):
         print("ID da categoria recebida:", catid)  # Debug
         
         try:
-            categoria = get_object_or_404(CategoriaProduct, id=catid)
+            categoria = get_object_or_404(CategoriaProduct, categoria=catid)
             categoria.delete()
             messages.success(request, "Categoria deletada com sucesso.")
         except Exception as e:
@@ -399,9 +447,9 @@ def sdelcatg(request):
         print("ID da categoria recebida:", scatid)  # Debug
         
         try:
-            categoria = get_object_or_404(SubCategoriaProduct, id=scatid)
-            categoria.delete()
-            messages.success(request, "Categoria deletada com sucesso.")
+            subcategoria= get_object_or_404(SubCategoriaProduct, subcategoria=scatid)
+            subcategoria.delete()
+            messages.success(request, "subcategoria deletada com sucesso.")
         except Exception as e:
             messages.error(request, f"Erro ao deletar categoria: {e}")
     return redirect("config")
@@ -413,18 +461,53 @@ def logout(request):
 parte de busca
 
 '''
-
 def buscar_produto(request):
     codigo = request.GET.get("codigo", "").strip()
     produto = None
 
+    categoria_nome = request.GET.get("categoria")
+    subcategoria_nome = request.GET.get("scategoria")
+    valor_max = request.GET.get("valor_max")  # novo filtro valor máximo
+
+    categorias = CategoriaProduct.objects.all()
+    cdgmk = Market.objects.all()  # garantir que sempre exista
+
+    subcategorias = SubCategoriaProduct.objects.none()
+    produtos = LinksProduct.objects.none()
+
+    if categoria_nome:
+        produtos_filtrados = LinksProduct.objects.filter(categoria__categoria=categoria_nome).select_related('market')
+        
+        subcategoria_ids = produtos_filtrados.values_list('subicategoria_id', flat=True).distinct()
+        subcategorias = SubCategoriaProduct.objects.filter(id__in=subcategoria_ids)
+
+        if subcategoria_nome:
+            produtos = produtos_filtrados.filter(subicategoria__subcategoria=subcategoria_nome)
+        else:
+            produtos = produtos_filtrados
+
+        # filtro valor máximo
+        if valor_max:
+            try:
+                valor_max_float = float(valor_max)
+                produtos = produtos.filter(preco__lte=valor_max_float)
+            except ValueError:
+                pass  # valor inválido, ignora o filtro
+
     if codigo:
         try:
-            produto = LinksProduct.objects.get(codigo=codigo)
+            produto = LinksProduct.objects.select_related('market').get(codigo=codigo)
         except LinksProduct.DoesNotExist:
             produto = None
 
     return render(request, "index.html", {
+        "cdgmk": cdgmk,
         "produto": produto,
-        "codigo": codigo
+        "codigo": codigo,
+        "categorias": categorias,
+        "subcategorias": subcategorias,
+        "produtos": produtos,
+        "categoria_selecionada": categoria_nome,
+        "scategoria_selecionada": subcategoria_nome,
+        "valor_max": valor_max,  # envia para o template
     })
