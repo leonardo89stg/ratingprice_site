@@ -37,6 +37,7 @@
         <div class="card-body">
           <h5 class="card-title">{{ produto.nomepro }}</h5>
           <p class="card-text">Preço: R$ {{ produto.preco }}</p>
+           Código do catálogo: {{ produto.codigo }}<br />
           {% comment %} <p>Descrição:</p>
           <pre class="card-text ">{{ produto.descricao }}</pre> {% endcomment %}
     {% if produto.market.cdgmk == "amz" %}
