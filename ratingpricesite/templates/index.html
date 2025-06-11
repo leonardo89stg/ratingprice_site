@@ -102,19 +102,19 @@
     <!-- Produtos: só mostra se subcategoria for selecionada -->
     {% if scategoria_selecionada %}
       <h3 class="text-center mb-4">Produtos</h3>
-      <ul class="list-group w-50">
+      <ul class="list-group w-25">
         {% for produto in produtos %}
-          <li class="list-group-item d-flex align-items-center gap-3 justify-content-between">
+          <li class="list-group-item d-flex align-items-center gap-1 justify-content-center">
             <img src="{{ produto.midia }}" alt="Imagem do produto {{ produto.nomepro }}" width="100" height="100" />
             <div>
               <strong>{{ produto.nomepro }}</strong><br />
               R$ {{ produto.preco }}<br />
-              Código: {{ produto.codigo }}<br />
+              Código do catálogo: {{ produto.codigo }}<br />
               <a href="{{ produto.links }}" target="_blank" class="btn btn-none shopee" style="color:#fff; text-decoration:none;">
                 Ir ao produto
               </a>
             </div>
-
+ </li>   <li class="list-group-item d-flex align-items-center gap-1 justify-content-center">
              {% if produto.market.cdgmk == "amz" %}
   <a href="{{ produto.links }}" target="_blank" class="btn  amz">Ver Produto</a>&nbsp;&nbsp;vendido na &nbsp;  {{ produto.market }}   {# ml = cor amarela #}
 {% elif produto.market.cdgmk == "ml" %}
@@ -122,7 +122,7 @@
 {% elif produto.market.cdgmk == "shp" %}
   <a href="{{ produto.links }}" target="_blank" class="btn shp">Ver Produto</a>&nbsp;&nbsp;vendido na&nbsp; {{ produto.market }}  {# shopee = cor laranja #}
 {% else %}
-  <a href="{{ produto.links }}" target="_blank" class="btn btn-primary">Ver Produto</a>&nbsp;&nbsp;vendido na &nbsp; /nf  {# fallback padrão #}
+  <a href="{{ produto.links }}" target="_blank" class="btn btn-primary">Ver Produto</a><p>vendido na &nbsp; /nf</p>  {# fallback padrão #}
 {% endif %}
           </li>
         {% empty %}
